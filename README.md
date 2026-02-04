@@ -31,15 +31,13 @@ sh batch_calculate_cm.sh
 
 ### Overview
 
-To predict the stability of microproteins, we developed a machine learning model based on their sequence features. Microproteins were labeled as stable or unstable based on predefined stability scores, and sequence embeddings were extracted using the ESM-2 model (specifically the 33rd layer representations). These embeddings were then pooled and fed into a Multilayer Perceptron (MLP) for classification. The model was optimized using Optuna for hyperparameter tuning and trained using a weighted random sampler to address class imbalance. 
+This repository provides two ESM-2–based models to predict microprotein stability from amino-acid sequence. Residue-level embeddings are extracted from pretrained ESM-2 (esm2_t33_650M_UR50D; layer 33, 1280D) with the backbone frozen. One model performs extreme-label classification (stable >0.8 vs unstable <0.2) using mean-pooled embeddings and an MLP. The other model predicts continuous stability scores (0–1) using global + C-terminal attention pooling and is trained with a combined MSE + pairwise ranking objective (model selection by Spearman correlation in 5-fold CV).
 
 ### Layout
 
-`stability_model/model_data.csv : ` Contains the labeled microprotein sequences and their corresponding stability scores used for model training. <br>
-`stability_model/stability_model.ipynb : ` Jupyter notebook for training the MLP model using the extracted sequence features and stability labels. <br>
-`stability_model/data_predict.ipynb : ` Jupyter notebook for predicting the stability of unseen microproteins using the trained model. <br>
-`stability_model/best_mlp.pth` The saved weights of the trained MLP model, which can be loaded for making stability predictions.<br>
-`stability_model/microprotein_db_seq.csv : ` Contains the names and sequences of all the microproteins included in the study. <br>
-`stability_model/microprotein_db_predicted_stability.csv : ` Contains the predicted stability values for all microproteins using the model. 
+`stability_model/Classification_model.ipynb : ` Train/evaluate the stability classifier (Optuna tuning, weighted sampling, ROC evaluation). <br>
+`stability_model/Classification_train_data.csv : `Training data for classification (sequences + stability labels). <br>
+`stability_model/Regression_model.ipynb : ` Train/evaluate the regression/ranking model (5-fold CV, Spearman-based selection). <br>
+`stability_model/Regression_train_data.csv :`Training data for regression (sequences + continuous stability scores).<br>
 
 
